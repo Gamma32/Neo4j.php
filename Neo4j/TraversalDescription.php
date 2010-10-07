@@ -5,6 +5,10 @@ class TraversalDescription
 	const BREADTH_FIRST = 'breadth first';
 	const DEPTH_FIRST = 'depth first';
 	
+	const NODES = "node";
+	const RELATIONSHIPS = "relationship";
+	const PATH = "path";
+	
 	var $_neo_db;
 	var $_traversalDescription;
 	var $_order;
@@ -91,10 +95,10 @@ class TraversalDescription
 		if ($http_code!=200) throw new HttpException($http_code);
 		
 		$objs = array();
-		if ($returnType == TraversalType::NODE ) {
+		if ($returnType == self::NODES ) {
 			$inflateClass = 'Node';
 			$inflateFunc = 'inflateFromResponse';
-		} elseif ($returnType == TraversalType::RELATIONSHIP) {
+		} elseif ($returnType == self::RELATIONSHIPS) {
 			$inflateClass = 'Relationship';
 			$inflateFunc = 'inflateFromResponse';
 		} else {

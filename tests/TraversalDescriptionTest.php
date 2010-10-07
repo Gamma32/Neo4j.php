@@ -24,7 +24,7 @@ class TraversalDescriptionTest extends Neo4jTestCase
         
         $td = new TraversalDescription($this->graphDb);
         $td->depthFirst();
-        $paths = $td->traverse($nodeOne, TraversalType::PATH );
+        $paths = $td->traverse($nodeOne, TraversalDescription::PATH );
         $path = $paths[0];
         
         $this->assertEquals($path->length(), 1, "Length of path should be 1");
@@ -58,7 +58,7 @@ class TraversalDescriptionTest extends Neo4jTestCase
         
         $td = new TraversalDescription($this->graphDb);
         $td->depthFirst();
-        $nodes = $td->traverse($nodeOne, TraversalType::NODE );
+        $nodes = $td->traverse($nodeOne, TraversalDescription::NODES );
         
         $this->assertEquals(sizeof($nodes), 1, "Size of returned nodes array should be 1");
         $this->assertEquals($nodes[0]->getId(), $nodeTwo->getId(), "only node should be second node");
@@ -87,7 +87,7 @@ class TraversalDescriptionTest extends Neo4jTestCase
         $td = new TraversalDescription($this->graphDb);
         $td->depthFirst();
         $td->returnFilter('builtin', 'all');
-        $nodes = $td->traverse($nodeOne, TraversalType::NODE );
+        $nodes = $td->traverse($nodeOne, TraversalDescription::NODES );
         
         $this->assertEquals(sizeof($nodes), 2, "Size of returned nodes array should be 2");
         $this->assertEquals($nodes[0]->getId(), $nodeOne->getId(), "nodes[0] should be equal to first node");
