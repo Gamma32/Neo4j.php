@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 docs
-.buildpath
-.project
-.settings
-=======
 .project
 .buildpath
 local-init.php
 .settings
 *~
->>>>>>> 50a47e55e61e19c6d648c63fb417ab69169f7274
