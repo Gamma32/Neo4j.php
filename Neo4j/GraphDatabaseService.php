@@ -17,33 +17,54 @@ class GraphDatabaseService
 	public $base_uri;
 	
 	/**
-	 * HTTP utility helper
+	 * JSON HTTP client
 	 *
-	 * @var HttpHelper
+	 * @var JSONClient
 	 */
-	protected $httpHelper;
+	protected $jsonClient;
 	
-	public function __construct($base_uri, $httpHelper=null)
+	public function __construct($base_uri, $jsonClient=null)
 	{
 		$this->base_uri = $base_uri;
 		
-		if (!is_null($httpHelper)) {
-		    $this->helper = $httpHelper;
+		if (!is_null($jsonClient)) {
+		    $this->jsonClient = $jsonClient;
 		} else {
-		    $this->helper = new HttpHelper;
+		    $this->jsonClient = new HttpHelper;
 		}
 	}
 	
-	public function getNodeById($node_id)
+	public function getNodeById($id) {
+	     return $this->getNodeByUri($this->base_uri.'node/'.$id);   
+	}
+	
+	public function getNodeByUri($uri)
 	{
-		$uri = $this->base_uri.'node/'.$node_id;
-		
-		list($response, $http_code) = $this->helper->jsonGetRequest($uri);
+		list($response, $http_code) = $this->jsonClient->jsonGetRequest($uri);
 
 		switch ($http_code)
 		{
 			case 200:
 				return Node::inflateFromResponse($this, $response);
+			case 404:
+				throw new NotFoundException();
+			default:
+				throw new NeoRestHttpException($http_code);
+		}
+	}
+	
+    public function getRelationshipById($id) {
+	     return $this->getNodeByUri($this->base_uri.'relationship/'.$id);   
+	}
+	
+	public function getRelationshipByUri($uri)
+	{
+		list($response, $http_code) = $this->jsonClient->jsonGetRequest($uri);
+
+		switch ($http_code)
+		{
+			case 200:
+				return Relationship::inflateFromResponse($this, $response);
 			case 404:
 				throw new NotFoundException();
 			default:

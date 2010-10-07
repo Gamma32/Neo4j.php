@@ -1,8 +1,16 @@
 <?php
-require_once 'NeoRest/HttpHelper.php';
-require_once 'NeoRest/NeoRestHttpException.php';
-require_once 'NeoRest/NotFoundException.php';
-require_once 'NeoRest/PropertyContainer.php';
-require_once 'NeoRest/Node.php';
-require_once 'NeoRest/Relationship.php';
-require_once 'NeoRest/GraphDatabaseService.php';
+require_once 'Neo4j/JsonClient.php';
+require_once 'Neo4j/NeoRestHttpException.php';
+require_once 'Neo4j/NotFoundException.php';
+require_once 'Neo4j/CurlException.php';
+require_once 'Neo4j/PropertyContainer.php';
+require_once 'Neo4j/Node.php';
+require_once 'Neo4j/Relationship.php';
+require_once 'Neo4j/TraversalUniqueness.php';
+require_once 'Neo4j/TraversalDescription.php';
+require_once 'Neo4j/Path.php';
+require_once 'Neo4j/Direction.php';
+require_once 'Neo4j/TraversalType.php';
+require_once 'Neo4j/IndexService.php';
+require_once 'Neo4j/RelationshipDescription.php';
+require_once 'Neo4j/GraphDatabaseService.php';

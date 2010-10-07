@@ -23,13 +23,26 @@ class Relationship extends PropertyContainer
 	public $_node1;
 	public $_node2;
 	
-	public function __construct(GraphDatabaseService $neo_db, $start_node, $end_node, $type)
+	/**
+	 * JSON HTTP client
+	 *
+	 * @var JSONClient
+	 */
+	protected $jsonClient;
+	
+	public function __construct(GraphDatabaseService $neo_db, $start_node, $end_node, $type, $jsonClient=null)
 	{
 		$this->_neo_db = $neo_db;
 		$this->_is_new = TRUE;
 		$this->_type = $type;
 		$this->_node1 = $start_node;
 		$this->_node2 = $end_node;
+		
+		if (!is_null($jsonClient)) {
+		    $this->jsonClient = $jsonClient;
+		} else {
+		    $this->jsonClient = new HttpHelper;
+		}
 	}
 	
 	public function getId()
@@ -77,11 +90,11 @@ class Relationship extends PropertyContainer
 				'data'=>$data
 			);
 			
-			list($response, $http_code) = HttpHelper::jsonPostRequest($this->getUri(), $payload);
+			list($response, $http_code) = $this->jsonClient->jsonPostRequest($this->getUri(), $payload);
 			
 			if ($http_code!=201) throw new NeoRestHttpException($http_code);
 		} else {
-			list($response, $http_code) = HttpHelper::jsonPutRequest($this->getUri().'/properties', $data);
+			list($response, $http_code) = $this->jsonClient->jsonPutRequest($this->getUri().'/properties', $data);
 			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 		}
 				
@@ -96,7 +109,7 @@ class Relationship extends PropertyContainer
 	{
 		if (!$this->_is_new) 
 		{
-			list($response, $http_code) = HttpHelper::deleteRequest($this->getUri());
+			list($response, $http_code) = $this->jsonClient->deleteRequest($this->getUri());
 
 			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 			
@@ -117,7 +130,7 @@ class Relationship extends PropertyContainer
 		return $uri;
 	}
 	
-	public static function inflateFromResponse(GraphDatabaseService $neo_db, $response)
+	public static function inflateFromResponse(GraphDatabaseService $neo_db, $response, $jsonClient=null)
 	{
 		$start_id = end(explode("/", $response['start']));
 		$end_id = end(explode("/", $response['end']));
@@ -125,7 +138,7 @@ class Relationship extends PropertyContainer
 		$start = $neo_db->getNodeById($start_id);
 		$end = $neo_db->getNodeById($end_id);
 		
-		$relationship = new Relationship($neo_db, $start, $end, $response['type']);
+		$relationship = new Relationship($neo_db, $start, $end, $response['type'], $jsonClient=null);
 		$relationship->_is_new = FALSE;
 		$relationship->_id = end(explode("/", $response['self']));
 		$relationship->setProperties($response['data']);

@@ -8,7 +8,7 @@
 /**
  * Node in the graph.
  *
- * @package NeoRest
+ * @package Neo4j
  */
 class Node extends PropertyContainer
 {
@@ -16,17 +16,30 @@ class Node extends PropertyContainer
 	public $_id;
 	public $_is_new;
 	
-	public function __construct(GraphDatabaseService $neo_db)
+	/**
+	 * JSON HTTP client
+	 *
+	 * @var JSONClient
+	 */
+	protected $jsonClient;
+	
+	public function __construct(GraphDatabaseService $neo_db, $jsonClient=null)
 	{
 		$this->_neo_db = $neo_db;
 		$this->_is_new = TRUE;
+		
+		if (!is_null($jsonClient)) {
+		    $this->jsonClient = $jsonClient;
+		} else {
+		    $this->jsonClient = new HttpHelper;
+		}
 	}
 	
 	public function delete()
 	{
 		if (!$this->_is_new) 
 		{
-			list($response, $http_code) = HttpHelper::deleteRequest($this->getUri());
+			list($response, $http_code) = $this->jsonClient->deleteRequest($this->getUri());
 			
 			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 			
@@ -39,10 +52,10 @@ class Node extends PropertyContainer
 	{
 	    $data = count($this->_data) > 0 ? $this->_data : NULL;
 		if ($this->_is_new) { 
-			list($response, $http_code) = HttpHelper::jsonPostRequest($this->getUri(), $data);
+			list($response, $http_code) = $this->jsonClient->jsonPostRequest($this->getUri(), $data);
 			if ($http_code!=201) throw new NeoRestHttpException($http_code);
 		} else {
-			list($response, $http_code) = HttpHelper::jsonPutRequest($this->getUri().'/properties', $data);
+			list($response, $http_code) = $this->jsonClient->jsonPutRequest($this->getUri().'/properties', $data);
 			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 		}
 
@@ -86,7 +99,7 @@ class Node extends PropertyContainer
 			$uri .= '/'.$types;
 		}
 		
-		list($response, $http_code) = HttpHelper::jsonGetRequest($uri);
+		list($response, $http_code) = $this->jsonClient->jsonGetRequest($uri);
 		
 		$relationships = array();
 		
@@ -113,9 +126,45 @@ class Node extends PropertyContainer
 		return $uri;
 	}
 	
-	public static function inflateFromResponse(GraphDatabaseService $neo_db, $response)
+    // TODO Add handling for relationships
+    // TODO Add algorithm parameter
+	public function findPaths(Node $toNode, $maxDepth=null, RelationshipDescription $relationships=null, $singlePath=null)
 	{
-		$node = new Node($neo_db);
+		
+		$pathDescription = array();
+		$pathDescription['to'] = $toNode->getUri();
+		if ($maxDepth) $pathDescription['max depth'] = $maxDepth;
+		if ($singlePath) $pathDescription['single path'] = $singlePath;
+		if ($relationships) $pathDescription['relationships'] = $relationships->get();
+		
+		list($response, $http_code) = $this->jsonClient->jsonPostRequest($this->getUri().'/pathfinder', $pathDescription);
+		
+		if ($http_code==404) throw new NotFoundException;
+		if ($http_code!=200) throw new NeoRestHttpException("http code: " . $http_code . ", response: " . print_r($response, true));
+		
+		$paths = array();
+		foreach($response as $result)
+		{
+				$paths[] = Path::inflateFromResponse($this->_neo_db, $result);	
+		}
+		
+		if (empty($paths)) {
+			throw new NotFoundException();
+		}
+		
+		return $paths;
+	}	
+
+	// Convenience method just returns the first path
+	public function findPath(Node $toNode, $maxDepth=null, RelationshipDescription $relationships=null)
+	{
+		$paths = $this->findPaths($toNode, $maxDepth, $relationships, 'true');
+		return $paths[0];
+	}
+	
+	public static function inflateFromResponse(GraphDatabaseService $neo_db, $response, $jsonClient=null)
+	{
+		$node = new Node($neo_db, $jsonClient=null);
 		$node->_is_new = FALSE;
 		$node->_id = end(explode("/", $response['self']));
 		$node->setProperties($response['data']);

@@ -1,7 +1,7 @@
 <?php
-require_once 'NeoRestTestCase.php';
+require_once 'Neo4jTestCase.php';
 
-class PropertyContainerTest extends NeoRestTestCase
+class PropertyContainerTest extends Neo4jTestCase
 {
     public function testPlaceholder()
     {

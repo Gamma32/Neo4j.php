@@ -1,7 +1,7 @@
 <?php
-require_once 'NeoRestTestCase.php';
+require_once 'Neo4jTestCase.php';
 
-class HttpHelperTest extends NeoRestTestCase
+class HttpHelperTest extends Neo4jTestCase
 {
     public function testPlaceholder()
     {
