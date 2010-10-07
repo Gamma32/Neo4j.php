@@ -56,7 +56,7 @@ class TraversalDescriptionTest extends Neo4jTestCase
         
         // Do traversal
         
-        $td = new TraversalDescription($graphDb);
+        $td = new TraversalDescription($this->graphDb);
         $td->depthFirst();
         $nodes = $td->traverse($nodeOne, TraversalType::NODE );
         
@@ -84,7 +84,7 @@ class TraversalDescriptionTest extends Neo4jTestCase
         
         // Do traversal
         
-        $td = new TraversalDescription($graphDb);
+        $td = new TraversalDescription($this->graphDb);
         $td->depthFirst();
         $td->returnFilter('builtin', 'all');
         $nodes = $td->traverse($nodeOne, TraversalType::NODE );

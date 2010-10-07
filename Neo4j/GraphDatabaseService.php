@@ -54,7 +54,7 @@ class GraphDatabaseService
 	}
 	
     public function getRelationshipById($id) {
-	     return $this->getNodeByUri($this->base_uri.'relationship/'.$id);   
+	     return $this->getRelationshipByUri($this->base_uri.'relationship/'.$id);   
 	}
 	
 	public function getRelationshipByUri($uri)

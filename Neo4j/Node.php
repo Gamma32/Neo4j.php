@@ -41,7 +41,9 @@ class Node extends PropertyContainer
 		{
 			list($response, $http_code) = $this->jsonClient->deleteRequest($this->getUri());
 			
-			if ($http_code!=204) throw new NeoRestHttpException($http_code);
+			if ($http_code!=204){
+			    throw new NeoRestHttpException($http_code);
+			}
 			
 			$this->_id = NULL;
 			$this->_id_new = TRUE;
