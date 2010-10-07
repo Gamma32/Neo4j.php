@@ -47,6 +47,8 @@ class HttpHelper
 		
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 	
+	    echo $post_data;
+	
 		if ($post_data)
 		{
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
@@ -70,7 +72,7 @@ class HttpHelper
 	
 	/**
 	 * A HTTP request that returns json and optionally sends a json payload (post only)
-	 *
+	 * 	 
 	 * @param string $url
 	 * @param string $method HTTP verb
 	 * @param mixed $data 
@@ -78,8 +80,12 @@ class HttpHelper
 	 * @return mixed
 	 */
 	public function jsonRequest($url, $method, $data=NULL)
-	{
-		$json = json_encode($data);
+	{	
+		if( ! is_null($data)) {
+		    $json = json_encode($data);
+		} else {
+		    $json = "";
+	    } 
 		$ret = self::request($url, $method, $json, 'application/json', 'application/json');
 		$ret[0] = json_decode($ret[0], TRUE);
 		return $ret;

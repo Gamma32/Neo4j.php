@@ -12,7 +12,7 @@
  */
 class PropertyContainer
 {
-	public $_data;
+	public $_data = array();
 	
 	public function __set($k, $v)
 	{

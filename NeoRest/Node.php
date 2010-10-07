@@ -28,7 +28,7 @@ class Node extends PropertyContainer
 		{
 			list($response, $http_code) = HttpHelper::deleteRequest($this->getUri());
 			
-			if ($http_code!=204) throw new HttpException($http_code);
+			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 			
 			$this->_id = NULL;
 			$this->_id_new = TRUE;
@@ -37,12 +37,13 @@ class Node extends PropertyContainer
 	
 	public function save()
 	{
-		if ($this->_is_new) {
-			list($response, $http_code) = HttpHelper::jsonPostRequest($this->getUri(), $this->_data);
-			if ($http_code!=201) throw new HttpException($http_code);
+	    $data = count($this->_data) > 0 ? $this->_data : NULL;
+		if ($this->_is_new) { 
+			list($response, $http_code) = HttpHelper::jsonPostRequest($this->getUri(), $data);
+			if ($http_code!=201) throw new NeoRestHttpException($http_code);
 		} else {
-			list($response, $http_code) = HttpHelper::jsonPutRequest($this->getUri().'/properties', $this->_data);
-			if ($http_code!=204) throw new HttpException($http_code);
+			list($response, $http_code) = HttpHelper::jsonPutRequest($this->getUri().'/properties', $data);
+			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 		}
 
 		if ($this->_is_new) 

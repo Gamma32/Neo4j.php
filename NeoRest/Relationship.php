@@ -69,18 +69,19 @@ class Relationship extends PropertyContainer
 	
 	public function save()
 	{
+	    $data = count($this->_data) > 0 ? $this->_data : NULL;
 		if ($this->_is_new) {
 			$payload = array(
 				'to' => $this->getEndNode()->getUri(),
 				'type' => $this->_type,
-				'data'=>$this->_data
+				'data'=>$data
 			);
 			
 			list($response, $http_code) = HttpHelper::jsonPostRequest($this->getUri(), $payload);
 			
 			if ($http_code!=201) throw new NeoRestHttpException($http_code);
 		} else {
-			list($response, $http_code) = HttpHelper::jsonPutRequest($this->getUri().'/properties', $this->_data);
+			list($response, $http_code) = HttpHelper::jsonPutRequest($this->getUri().'/properties', $data);
 			if ($http_code!=204) throw new NeoRestHttpException($http_code);
 		}
 				
