@@ -9,6 +9,10 @@ class TraversalDescription
 	const RETURN_RELATIONSHIPS = "relationship";
 	const RETURN_PATH = "path";
 	
+	const DIRECTION_BOTH = 'all';
+	const DIRECTION_INCOMING = 'in';
+	const DIRECTION_OUTGOING = 'out';
+	
 	var $_neo_db;
 	var $_traversalDescription;
 	var $_order;
