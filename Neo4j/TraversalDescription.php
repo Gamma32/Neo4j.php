@@ -29,7 +29,7 @@ class TraversalDescription
 		if (!is_null($jsonClient)) {
 		    $this->jsonClient = $jsonClient;
 		} else {
-		    $this->jsonClient = new HttpHelper;
+		    $this->jsonClient = new JsonClient;
 		}
 	}
 			
