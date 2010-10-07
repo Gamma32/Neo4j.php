@@ -9,13 +9,15 @@ Very basic at the moment.
 * Node delete
 * Create relationship between two nodes
 * List / filter relationships on a node
+* Traversal access
+* Indexing
 
 ## Todo ##
 
 * Documentation!
-* Traversal access
-* Indexing
 * Prevent multiple copies of the same node or relationship object (implement cache in load node and load relationship)
+* Lazy loading (URI constructors for node & relationship)
+* URI discovery rather than hard coded URIs
 
 ## Getting started ##
 
@@ -36,9 +38,13 @@ Note: Only tested with PHP 5.3.
 
 Generate API documentation:
 
-`phing docs`
+    phing docs
 
 To generate documentation, you need 
 
 * [Phing](http://phing.info/trac/wiki/Users/Download)
 * [PhpDocumentor](http://www.phpdoc.org/)
+
+Run unit tests:
+
+    phpunit

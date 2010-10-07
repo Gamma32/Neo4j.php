@@ -55,9 +55,6 @@ class IndexService {
 		
 	}
 	
-	// A hack for now.  The REST API doesn't offer an implementation of 
-	// org.neo4j.index.IndexServe.getSingleNode();
-	// So we just get the first element in the returned array.
 	public function getNode($key, $value) {
 		$nodes = $this->getNodes($key, $value);
 		return $nodes[0];

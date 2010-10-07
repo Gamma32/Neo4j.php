@@ -90,10 +90,6 @@ class TraversalDescription
 	{
 		$this->_data = $this->_traversalDescription;
 		$uri = $node->getUri().'/traverse'.'/'.$returnType;
-
-// print_r($uri);
-// print_r($traversalDescription);
-
 		
 		list($response, $http_code) = $this->jsonClient->jsonPostRequest($uri, $this->_data);
 		if ($http_code!=200) throw new HttpException($http_code);
@@ -112,8 +108,7 @@ class TraversalDescription
 		
 		foreach($response as $result)
 		{
-				$objs[] = $inflateClass::$inflateFunc($this->_neo_db, $result);	
-//			$objs[] = $result;
+				$objs[] = $inflateClass::$inflateFunc($this->_neo_db, $result);
 		}
 		
 		return $objs;
